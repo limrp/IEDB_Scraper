@@ -2,7 +2,8 @@
 
 ## Description
 
-This tool is designed to automate the extraction of immunological data from the Immune Epitope Database (IEDB). It parses web pages corresponding to given IEDB links and extracts relevant information such as the organism, antigen, epitope, MHC alleles, and T cell assays. The data is then structured into a pandas DataFrame and saved as a CSV file for further analysis or reporting.
+This script automates the extraction of immunological data from the Immune Epitope Database (IEDB). It parses web pages corresponding to given IEDB links and extracts relevant information such as the organism, antigen, epitope, MHC alleles, and T cell assays. The data is then structured into a pandas DataFrame and saved as a CSV file for further analysis or reporting.
+
 
 ## Installation
 
