@@ -23,7 +23,7 @@ Ensure you have these libraries installed before executing the script.
 To use this script, you need to have a text file containing IEDB links, one per line. You can then run the script with the following command:
 
 ```bash
-python script_name.py -i input_file.txt -o output_data.csv -l log_file.txt
+python iedb_scraper.py -i input_file.txt -o output_data.csv -l log_file.txt
 ```
 
 - `-i` or `--input`: (Required) Path to the input file containing IEDB links.
