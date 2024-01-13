@@ -1,0 +1,6 @@
+            # Correctly update the progress bar
+            # progress = (index + 1) / len(links)  # Calculate the completion percentage
+            # bar(progress)  # Update the progress bar with the completion percentage
+
+            # Manually update the progress bar
+            # bar(index + 1)  # index + 1 because index starts at 0

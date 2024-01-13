@@ -1,0 +1,31 @@
+,Organism,Antigen,Epitope,Positive MHC alleles,Negative MHC alleles,Total response T cell assay(s),qualitative binding,cytotoxicity,granzyme B release,IFNg release,TNFa release,Source
+0,SARS-CoV2,Replicase polyprotein 1ab,VQMAPISAMV,No data found,No data found,0,0/1,,,,,https://www.iedb.org/epitope/2224083
+1,SARS-CoV2,Replicase polyprotein 1ab,YLVQQESPFV,No data found,No data found,1,1/1,,,,,https://www.iedb.org/epitope/2224093
+2,SARS-CoV2,Replicase polyprotein 1ab,TLVTMPLGYV,No data found,No data found,1,1/1,,,,,https://www.iedb.org/epitope/2224076
+3,SARS-CoV2,Replicase polyprotein 1ab,TLATHGLAAV,No data found,No data found,1,1/1,1/1,1/1,1/1,1/1,https://www.iedb.org/epitope/2224075
+4,SARS-CoV2,Replicase polyprotein 1ab,SQLMCQPILL,No data found,No data found,0,0/1,,,,,https://www.iedb.org/epitope/2224067
+5,SARS-CoV2,Replicase polyprotein 1ab,YILFTRFFYV,No data found,No data found,1,1/1,,,,,https://www.iedb.org/epitope/2224090
+6,SARS-CoV2,Replicase polyprotein 1ab,YVWKSYVHVV,No data found,No data found,1,1/1,,,,,https://www.iedb.org/epitope/2224099
+7,SARS-CoV2,Replicase polyprotein 1ab,YVNTFSSTFNV,No data found,No data found,1,1/1,,,,,https://www.iedb.org/epitope/2224098
+8,SARS-CoV2,Replicase polyprotein 1ab,MQLFFSYFAV,No data found,No data found,1,1/1,,,,,https://www.iedb.org/epitope/2224039
+9,SARS-CoV2,Replicase polyprotein 1ab,MQLFFSYFA,No data found,No data found,1,1/1,1/1,1/1,1/1,1/1,https://www.iedb.org/epitope/2224038
+10,SARS-CoV2,Spike glycoprotein,QLTPTWRVY + PYRE(Q1),"HLA class I, HLA-B*15:01","HLA-A*01:01, HLA-A*02:01, HLA-A*26:01, HLA-B*07:02, HLA-B*18:01, HLA-B*44:02, HLA-B*44:03, HLA-B*51:01",1,2/4,,,,,https://www.iedb.org/epitope/2235314
+11,SARS-CoV2,Spike glycoprotein,YPDKVFRSSVL,No data found,No data found,1,1/1,,,,,https://www.iedb.org/epitope/2224096
+12,SARS-CoV2,Spike glycoprotein,IAWNSNNL,No data found,No data found,0,,,,0/2,,https://www.iedb.org/epitope/2243241
+13,SARS-CoV2,Spike glycoprotein,QTYVTQQL,No data found,No data found,0,,,,0/2,,https://www.iedb.org/epitope/2243313
+14,SARS-CoV2,Spike glycoprotein,YPDKVFRSSV,No data found,No data found,1,1/1,1/1,1/1,1/1,1/1,https://www.iedb.org/epitope/2224095
+15,SARS-CoV2,Spike glycoprotein,FNDGVYFAS,HLA-A*01:01,No data found,0,,,,0/1,0/1,https://www.iedb.org/epitope/2230252
+16,SARS-CoV2,Spike glycoprotein,YFPLQSYGFQ,No data found,No data found,0,0/1,,,,,https://www.iedb.org/epitope/2224089
+17,SARS-CoV2,Spike glycoprotein,MIAQYTSALL,No data found,No data found,1,2/2,,,,,https://www.iedb.org/epitope/2224035
+18,SARS-CoV2,Spike glycoprotein,VYSSANNCTFE,No data found,No data found,1,1/1,,,,,https://www.iedb.org/epitope/2224085
+19,SARS-CoV2,Spike glycoprotein,VGYQPYRV,No data found,No data found,0,,,,0/2,,https://www.iedb.org/epitope/2243365
+20,SARS-CoV2,Spike glycoprotein,VPVAIHADQL,No data found,No data found,0,0/1,,,,,https://www.iedb.org/epitope/2224082
+21,SARS-CoV2,Spike glycoprotein,SPRRARSVASQ,No data found,No data found,1,1/1,,,,,https://www.iedb.org/epitope/2224066
+22,SARS-CoV2,Spike glycoprotein,SPRRARSVAS,No data found,No data found,1,1/1,,,,,https://www.iedb.org/epitope/2224065
+23,SARS-CoV2,Spike glycoprotein,RVYSTGSNVFQ,No data found,No data found,0,0/1,,,,,https://www.iedb.org/epitope/2224058
+24,SARS-CoV2,Spike glycoprotein,RVYSSANNCTF,No data found,No data found,1,1/1,,,,,https://www.iedb.org/epitope/2224057
+25,SARS-CoV2,Spike glycoprotein,QYIKWPWYIWL,No data found,No data found,0,0/1,,,,,https://www.iedb.org/epitope/2224049
+26,SARS-CoV2,Spike glycoprotein,NSPRRARSVAS,No data found,No data found,1,1/1,,,,,https://www.iedb.org/epitope/2224044
+27,SARS-CoV2,Spike glycoprotein,NCYFPLQSYGF,No data found,No data found,0,0/1,,,,,https://www.iedb.org/epitope/2224040
+28,SARS-CoV2,Spike glycoprotein,VYSTGSNVFQ,No data found,No data found,0,0/1,,,,,https://www.iedb.org/epitope/2224086
+29,SARS-CoV2,Spike glycoprotein,VLYENQKL,No data found,No data found,1,,,,2/2,,https://www.iedb.org/epitope/2243367
