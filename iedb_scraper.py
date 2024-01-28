@@ -5,6 +5,7 @@
 # | DATE: 08/01/24
 # | CREATED BY: Lila Maciel Rodriguez Perez
 # | PROJECT FILE: IEDB Scraper
+# | VERSION: 3.0
 # *----------------------------------------------------------------------------
 
 # *---------------------------------  Libraries -------------------------------
@@ -24,7 +25,8 @@ from bs4 import BeautifulSoup
 def parse_args():
     parser = argparse.ArgumentParser(description="Parse HTML text and generate table.")
     parser.add_argument("-i", "--input", required=True, help="File with links.")
-    parser.add_argument("-o", "--output_csv", required=True, help="Output CSV file")
+    parser.add_argument("-o", "--output_csv", required=True, help="Output CSV file.")
+    parser.add_argument("-org", "--organism", help="Specify the organism.")
     parser.add_argument(
         "-l",
         "--log",
@@ -50,14 +52,12 @@ def extract_html(url):
 
 def get_epitope_data(pattern, string):
     # Using regular expressions to find the JSON-like data
-    epitope_data_match = re.search(pattern, string)
+    match = re.search(pattern, string)  # epitope_data_
     # If there is no match
-    if not epitope_data_match:
+    if not match:
         raise ValueError("There was no match for epitope data in the HTML")
     # Get epitope data and Convert the matched strings to valid JSONs
-    epitope_data_string = json.loads(epitope_data_match.group(1))["data"][
-        "referenceEpitopeString"
-    ]
+    epitope_data_string = json.loads(match.group(1))["data"]["referenceEpitopeString"]
     epitope_match = re.search(
         r"(^[A-Z]+(?: \+ [A-Z]+\([A-Z0-9]+\))?)\s.*", epitope_data_string
     )
@@ -72,68 +72,103 @@ def get_epitope_data(pattern, string):
     return organism_match.group(1), antigen_match.group(1), epitope_match.group(1)
 
 
-def get_and_classify_allele_data(pattern, string):
+def get_json_data(pattern, string):
+    # Using regular expressions to find the JSON-like data
+    compiled_data_match = re.search(pattern, string)
+    # If there was no match
+    if not compiled_data_match:
+        raise ValueError("There was no match in the HTML")
+    # If there was a match, proceed
+    try:
+        return json.loads(compiled_data_match.group(1).replace("'", '"'))
+    except json.JSONDecodeError:
+        raise ValueError("Failed to parse data as JSON")
+
+
+def get_allele_data(json_data):
+    """
+    Extracts MHC molecule data from a given JSON structure.
+
+    Args:
+    json_data (dict): A dictionary representing JSON data.
+
+    Returns:
+    list: A list of dictionaries with MHC molecule information if available, otherwise an empty list.
+    """
+    try:
+        # Ensure that the keys 'data' and the nested 'data' exist
+        if "data" in json_data and "data" in json_data["data"][0]:
+            # List of dictionaries with the MHC molecules in each dictionary
+            return json_data["data"][0]["data"]
+        else:
+            return []
+    except (KeyError, IndexError, TypeError):
+        # Handle the case where the structure is not as expected
+        return []  # or raise an appropriate exception
+
+
+def allele_clasification(mhc_list):
+    """
+    Classifies MHC molecules based on their positive count into positives and negatives.
+
+    Args:
+    mhc_list (list of dict): List of dictionaries with the MHC molecules in each dictionary.
+
+    Returns:
+    tuple: Two lists containing positive and negative MHC molecules.
+    """
+    # mhc_list: List of dictionaries with the MHC molecules in each dictionary
     # List variables
     mhc_positives = []
     mhc_negatives = []
-
-    # (1) Using regular expressions to find the JSON-like MHC allele data
-    compiled_data_match = re.search(pattern, string)
-
-    # If there was no match
-    if not compiled_data_match:
-        raise ValueError(
-            "There was no match for allele and T cell assays data in the HTML"
-        )
-    # If there was a match, proceed
-    compiled_data_json = json.loads((compiled_data_match.group(1)).replace("'", '"'))
-    # List of dictionaries with the MHC molecules in each dictionary
-    mhc_list = compiled_data_json["data"][0]["data"]
-    # (2) Classify the MHC molecules
     # Iterating over each dictionary-element of the list
     for mhc_dict in mhc_list:
-        mhc_molecule = mhc_dict["mhc_molecule"]
-        mhc_positive_count = int(mhc_dict["positive_count"])
-        # Classify MHC molecules
-        if mhc_positive_count > 0:
-            mhc_positives.append(mhc_molecule)
+        if "mhc_molecule" in mhc_dict and "positive_count" in mhc_dict:
+            try:
+                mhc_molecule = mhc_dict["mhc_molecule"]
+                mhc_positive_count = int(mhc_dict["positive_count"])
+                # Check the positive count
+                if mhc_positive_count > 0:
+                    mhc_positives.append(mhc_molecule)
+                else:
+                    mhc_negatives.append(mhc_molecule)
+            except ValueError:
+                # Handle the case where positive_count is not an integer
+                continue  # Skip this entry if positive_count is not a valid integer
         else:
-            mhc_negatives.append(mhc_molecule)
-    return mhc_positives, mhc_negatives  # a tuple with 2 list
+            continue  # Skip this entry if required keys are missing
+    return mhc_positives, mhc_negatives
 
 
-def get_T_cell_assay_data(pattern, string):
-    # List variables
-    t_assays_list = []
+def get_T_cell_assay_data(json_data):
+    # json_data["data"]?
+    # List of dictionaries, I only want the last dict, whose 'data' key has the info I want:
+    try:
+        if "data" in json_data and "data" in json_data["data"][-1]:
+            # list of dictionaries with T cell assays info
+            return json_data["data"][-1]["data"]
+        else:
+            return []
+    except (KeyError, IndexError, TypeError):
+        # Handle the case where the structure is not as expected
+        return []  # or raise an appropriate exception
 
-    # Using regular expressions to find the JSON-like data
-    compiled_data_match = re.search(pattern, string)
 
-    # If there was no match
-    if not compiled_data_match:
-        raise ValueError("There was no match for T cell assays data in the HTML")
-    # If there was a match, proceed
-    compiled_data_json = json.loads((compiled_data_match.group(1)).replace("'", '"'))
-    ## List of dictionaries, I only want the last dict, whose 'data' key has the info I want:
-    ## another list of dictionaries with the T cell assay data
-    assays_list = compiled_data_json["data"][-1]["data"]
-    for assay_dict in assays_list:
-        assay_key = assay_dict["assay_type"]
-        assay_val = f"{assay_dict['positive_count']}/{assay_dict['total_count']}"
-        assay_tuple = (assay_key, assay_val)
-        t_assays_list.append(assay_tuple)
+def calculate_total_T_response(assay_list):
+    """Calculates if the total T cell response is positive (1) or negative (0).
 
-    # Total response of T cell assays
-    ## Generate list of booleans for each assay
-    t_assays_boolean_list = [int(val.split("/")[0]) > 0 for key, val in t_assays_list]
-    ## Evaluate list of booleans
-    if any(t_assays_boolean_list):
-        # If even one element of the list is True
-        total_T_response = 1
-    else:
-        # If none is True, all are False
-        total_T_response = 0
-    return t_assays_list, total_T_response
+    Args:
+        assay_list (list): List of tuples (assay type, assay result)
+
+    Returns:
+        integer: Total response of all the T cell assays
+    """
+    if not assay_list:
+        return "-"
+    # Generate list of booleans for each assay to determine if there's any positive response
+    t_assays_boolean_list = [int(val.split("/")[0]) > 0 for key, val in assay_list]
+    # Evaluate the list of booleans and return total response
+    return 1 if any(t_assays_boolean_list) else 0
 
 
 def main():
@@ -199,15 +234,23 @@ def main():
                         organism, antigen, epitope = get_epitope_data(
                             r"var refernceEpitopeData = (.*?});", script.string
                         )
+                        # # Part 2.0: Search the data and convert it to json format
+                        compiled_data_json = get_json_data(
+                            r"var compiledData = (.*?});", script.string
+                        )
                         # Part 2: Get MHC allele data (positive and negative list)
-                        positive_list, negative_list = get_and_classify_allele_data(
-                            r"var compiledData = (.*?});", script.string
-                        )
+                        mhc_list = get_allele_data(compiled_data_json)
+                        positive_list, negative_list = allele_clasification(mhc_list)
                         # Part 3: Get T cell assay data
-                        t_assays_list, total_T_response = get_T_cell_assay_data(
-                            r"var compiledData = (.*?});", script.string
-                        )
-                        # print(t_assays_list)
+                        assay_list = get_T_cell_assay_data(compiled_data_json)
+                        assay_info_list = [
+                            (
+                                assay_dict["assay_type"],
+                                f"{assay_dict['positive_count']}/{assay_dict['total_count']}",
+                            )
+                            for assay_dict in assay_list
+                        ]
+                        total_T_response = calculate_total_T_response(assay_info_list)
                         data_extracted = True
                         break
                         # out of the loop, data was found, do not keep iterating over other scripts anymore
@@ -228,16 +271,16 @@ def main():
                 epitope_dict["Epitope"] = epitope
                 # Adding MHC allele data to dictionary
                 epitope_dict["Positive MHC alleles"] = (
-                    ", ".join(positive_list) if positive_list else "No data found"
+                    ",".join(positive_list) if positive_list else "-"
                 )
                 epitope_dict["Negative MHC alleles"] = (
-                    ", ".join(negative_list) if negative_list else "No data found"
+                    ",".join(negative_list) if negative_list else "-"
                 )
                 # Adding T Cell assays data to dictionary
                 epitope_dict["Total response T cell assay(s)"] = total_T_response
                 assay_entries = {
                     assay_key: assay_val
-                    for assay_key, assay_val in t_assays_list
+                    for assay_key, assay_val in assay_info_list
                     if assay_key not in epitope_dict
                 }
                 epitope_dict.update(assay_entries)
@@ -264,10 +307,15 @@ def main():
     df = pd.DataFrame(ordered_dicts).drop(columns="Source")
     # Adding the 'Source' column to the df. It will appear as the last column.
     df["Source"] = [d["Source"] for d in ordered_dicts]
+    # If an organism was specified
+    if args.organism:
+        df["Organism"] = args.organism
+    # Replacing NaN with "-"
+    df.fillna("-", inplace=True)
     # Sorting Dataframe by 'Antigen' and resseting the index
     sorted_by_antigen_df = df.sort_values(by="Antigen").reset_index(drop=True)
-
     print()
+
     # (3) Storing the pandas DataFrame into a CSV file
     logging.info("Storing the pandas DataFrame into a CSV file.\n")
     sorted_by_antigen_df.to_csv(args.output_csv)
