@@ -17,7 +17,7 @@ import re
 from collections import OrderedDict
 
 import pandas as pd
-import requests
+import requests # Doesn't work anymore
 from alive_progress import alive_bar
 from bs4 import BeautifulSoup
 
