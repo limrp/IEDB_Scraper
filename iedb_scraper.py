@@ -322,9 +322,8 @@ def extract_html(url, client, retry_base_delay=20.0, max_retries=5):
             # an error status code such as 429, 403, 404, or 500.
             status_code = e.response.status_code
 
-            # 429 means: Too Many Requests.
-            # The server is asking us to slow down.
-            if status_code == 429 and attempt < max_retries:
+            # Only retry errors that are likely to be temporary.
+            if status_code in retryable_status_codes and attempt < max_retries:
                 # Some servers send a Retry-After header.
                 # Example:
                 #   Retry-After: 60
@@ -340,20 +339,11 @@ def extract_html(url, client, retry_base_delay=20.0, max_retries=5):
                 else:
                     # The server did NOT tell us exactly how long to wait.
                     # So we use our local retry_base_delay argument.
-                    #
-                    # This is exponential backoff:
-                    #   attempt 1 -> retry_base_delay
-                    #   attempt 2 -> retry_base_delay * 2
-                    #   attempt 3 -> retry_base_delay * 4
-                    wait_seconds = retry_base_delay * (2 ** (attempt - 1))
-
-                    # Add a tiny random extra wait.
-                    # This avoids making every request look perfectly robotic.
-                    wait_seconds += random.uniform(0, 3)
+                    wait_seconds = get_backoff_wait_seconds(retry_base_delay, attempt)
                     wait_reason = "local retry_base_delay"
 
                 logging.warning(
-                    f"429 Too Many Requests for {url}. "
+                    f"HTTP {status_code} for {url}. "
                     f"Waiting {wait_seconds:.1f} seconds before retry "
                     f"{attempt + 1}/{max_retries} "
                     f"using {wait_reason}."
@@ -363,8 +353,32 @@ def extract_html(url, client, retry_base_delay=20.0, max_retries=5):
                 time.sleep(wait_seconds)
                 continue
 
-            # If the error is not a retryable 429, or if we already
+            # If the error is not retryable, or if we already used
             # used all retries, send the error upward to main().
+            raise
+
+        except httpx.RequestError as e:
+            # RequestError means the request failed before we got a normal
+            # HTTP response. This includes cases like:
+            #   - Server disconnected without sending a response
+            #   - timeout
+            #   - network connection problem
+            #
+            # These problems are often temporary, so retrying can help.
+            if attempt < max_retries:
+                wait_seconds = get_backoff_wait_seconds(retry_base_delay, attempt)
+
+                logging.warning(
+                    f"Network/protocol error for {url}: {e}. "
+                    f"Waiting {wait_seconds:.1f} seconds before retry "
+                    f"{attempt + 1}/{max_retries}."
+                )
+
+                # Make Python sleep before trying the SAME URL again.
+                time.sleep(wait_seconds)
+                continue
+
+            # If all retries failed, send the error upward to main().
             raise
 
     # Safety net. Normally Python reaches this only if something unusual happens.
@@ -488,7 +502,19 @@ def extract_antigen_organism_pairs(reference_string):
     # ------------------------------------------------------------
 
     section_match = re.search(
-        r"studied as part of\s+(.*?)(?=\.\s+This epitope\b|$)",
+        # Stop at the start of the next epitope sentence.
+        #
+        # Why this matters:
+        # Some pages say:
+        #   ". This epitope has been studied ..."
+        # Other pages say:
+        #   ". The epitope is an analog of ..."
+        #
+        # If we do not stop before both options, the organism can accidentally
+        # include extra text like:
+        #   "SARS-CoV2. The epitope is an analog of ..."
+        # r"studied as part of\s+(.*?)(?=\.\s+This epitope\b|$)",
+        r"studied as part of\s+(.*?)(?=\.\s+(?:This|The)\s+epitope\b|$)",
         reference_string,
         flags=re.DOTALL,
     )
