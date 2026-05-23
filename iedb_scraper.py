@@ -142,7 +142,7 @@ def get_backoff_wait_seconds(retry_base_delay, attempt):
     """
     Calculate how long to wait before retrying a failed download.
 
-    Child version:
+    Simplified version:
         The first time the robot fails, it waits a little.
         If it fails again, it waits longer.
         If it fails again, it waits even longer.
@@ -188,7 +188,7 @@ def get_failed_output_path(output_csv):
         output_csv = /path/to/results.csv
         failed CSV = /path/to/results_failed_links.csv
 
-    Child version:
+    Simplified version:
         If the main output goes into one folder, the failed-links list
         should go into the same folder, like putting all school papers
         into the same backpack.
@@ -236,7 +236,7 @@ def build_httpx_client():
     Why use one client?
     - It can reuse connections.
     - It keeps all headers in one place.
-    - In your testing, httpx worked where requests did not.
+    - In the testing, httpx worked where requests did not.
     """
     headers = {
         "User-Agent": (
@@ -843,7 +843,7 @@ def extract_all_data_from_html(html, source_link, failed_csv):
     # If we never found the expected IEDB script block, save this as a
     # parsing failure too.
     #
-    # Child version:
+    # Simplified version:
     #   The downloader brought us a book, but the book did not contain
     #   the page/section that our parser expected to read.
     if not found_candidate_script:
