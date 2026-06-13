@@ -151,6 +151,15 @@ The wide-format CSV contains one row per epitope page. If an epitope is associat
 
 Note: the wide table can include additional numbered columns such as `Antigen_3`, `UniProt_3`, `Organism_3`, `Antigen_4`, `UniProt_4`, and `Organism_4` when an epitope maps to more than two antigen-organism pairs.
 
+## Requirements
+
+```text
+pandas
+httpx
+beautifulsoup4
+alive-progress
+```
+
 ## Installation
 
 Create an environment and install the required packages:
@@ -216,15 +225,6 @@ When retrying, it uses exponential backoff. For example, with `-r 20`, retry wai
 ```
 
 If a server provides a `Retry-After` header, the scraper uses the server-provided waiting time first.
-
-## Requirements
-
-```text
-pandas
-httpx
-beautifulsoup4
-alive-progress
-```
 
 ## Notes
 
