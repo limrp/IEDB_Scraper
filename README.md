@@ -217,20 +217,7 @@ When retrying, it uses exponential backoff. For example, with `-r 20`, retry wai
 
 If a server provides a `Retry-After` header, the scraper uses the server-provided waiting time first.
 
-## Recommended repository structure
-
-```text
-iedb_scraper/
-├── iedb_scraper.py
-├── README.md
-├── IEDB_Epitope_Scraper_Workflow.png
-├── Epitope_Scraper_Process_Flow_Diagram.png
-├── requirements.txt
-└── examples/
-    └── links.txt
-```
-
-Suggested `requirements.txt`:
+## `requirements.txt`:
 
 ```text
 pandas
