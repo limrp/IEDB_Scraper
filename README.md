@@ -4,7 +4,7 @@ A Python command-line tool for extracting structured immunological data from IED
 
 The scraper reads a list of IEDB epitope URLs, downloads each page, parses hidden JavaScript/HTML data, and exports clean CSV tables containing epitope, antigen, UniProt, organism, MHC ligand, and T-cell assay information.
 
-![IEDB Epitope Scraper process flow](Epitope_Scraper_Process_Flow_Diagram.png)
+![IEDB Epitope Scraper process flow](imgs/Epitope_Scraper_Process_Flow_Diagram.png)
 
 ## What this tool does
 
@@ -25,7 +25,7 @@ It also supports epitopes associated with multiple antigen-organism pairs, for e
 
 ## Workflow
 
-![IEDB Epitope Scraper workflow](IEDB_Epitope_Scraper_Workflow.png)
+![IEDB Epitope Scraper workflow](imgs/IEDB_Epitope_Scraper_Workflow.png)
 
 The pipeline follows these main steps:
 
