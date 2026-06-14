@@ -168,6 +168,19 @@ Create an environment and install the required packages:
 pip install pandas httpx beautifulsoup4 alive-progress
 ```
 
+## Command-line options
+
+| Option | Meaning |
+|---|---|
+| `-i`, `--input` | Input text file with one IEDB URL per line. |
+| `-o`, `--output_csv` | Output path for the wide CSV table. |
+| `-o2`, `--output_long_csv` | Optional output path for the long CSV table. |
+| `-org`, `--organism` | Optional organism override for the wide and long tables. |
+| `-l`, `--log` | Output path for the log file. |
+| `-s`, `--sleep_seconds` | Seconds to wait between normal links. Use `0` for no normal waiting. |
+| `-r`, `--retry_base_delay` | Base retry delay for temporary server or network errors. |
+| `-m`, `--max_retries` | Maximum download attempts per link. |
+
 ## Usage
 
 Basic run:
@@ -192,19 +205,6 @@ python iedb_scraper.py \
   -r 20 \
   -m 5
 ```
-
-## Command-line options
-
-| Option | Meaning |
-|---|---|
-| `-i`, `--input` | Input text file with one IEDB URL per line. |
-| `-o`, `--output_csv` | Output path for the wide CSV table. |
-| `-o2`, `--output_long_csv` | Optional output path for the long CSV table. |
-| `-org`, `--organism` | Optional organism override for the wide and long tables. |
-| `-l`, `--log` | Output path for the log file. |
-| `-s`, `--sleep_seconds` | Seconds to wait between normal links. Use `0` for no normal waiting. |
-| `-r`, `--retry_base_delay` | Base retry delay for temporary server or network errors. |
-| `-m`, `--max_retries` | Maximum download attempts per link. |
 
 ## Error handling and retry logic
 
